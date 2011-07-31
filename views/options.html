@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Style-type" content="text/css" />
+  <link rel="stylesheet" href="styles/settings.css" type="text/css" />
+  <script type="text/javascript" src="scripts/settings.js"></script>
+</head>
+<body onload="loadOptions()">
+<h1>
+<img src="../images/reload64.png" />
+Tab Sorter
+</h1>
+<h2>
+Options
+<button onclick="saveOptions()">save</button>
+</h2>
+
+<h3>Common</h3>
+Sort key:
+<select id="sortKey">
+  <option value="url">url</option>
+  <option value="title">title</option>
+</select>
+
+<h3>On icon clicked</h3>
+Removes same tabs:<input type="checkbox" id="removeSameTabs" /><br />
+
+<h3>On tab updated</h3>
+Sorts tabs:<input type="checkbox" id="isAlways" /><br />
+</body>
+</html>

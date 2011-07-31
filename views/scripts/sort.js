@@ -30,7 +30,7 @@ function sort(sortkey, isAscending) {
     });
 }
 
-function isSorted(sortkey, isAscending, isSortedFunc, isNotSortedFunc) {
+function isSorted(sortkey, isAscending, func) {
     chrome.windows.getCurrent(function (window) {
 	chrome.tabs.getAllInWindow(window.id, function(tabs) {
 	    var sorted = true;
@@ -40,39 +40,54 @@ function isSorted(sortkey, isAscending, isSortedFunc, isNotSortedFunc) {
 		else
 		    sorted = tabs[i][sortkey] >= tabs[i + 1][sortkey];
 	    }
-
-	    if (sorted)
-		isSortedFunc();
-	    else
-		isNotSortedFunc();
+	    func(sorted, tabs);
 	});
     });
 }
 
-var key = "url";
 var isAscending = true;
 
-chrome.browserAction.onClicked.addListener(function (tab) {
+chrome.browserAction.onClicked.addListener(function (tab) {  
+    var key = localStorage["sortKey"] || "url";
     isSorted(
 	key,
 	isAscending,
-	function () {
-	    isAscending = !isAscending;
-	    sort(key, isAscending);
-	},
-	function () {
+	function (sorted, tabs) {
+	    if (sorted) {
+		var count = 0;
+		if ((localStorage["removeSameTabs"] || "") == "true") {
+		    var object = new Object();
+		    for (var i = 0, n = tabs.length; i < n; i++) {
+			var value = tabs[i][key];
+			if (!object[value])
+			    object[value] = 0;
+
+			if (++object[value] >= 2) {
+			    chrome.tabs.remove(tabs[i].id);
+			    count++;
+			}
+		    }
+		}
+		if (count > 0)
+		    return;
+
+		isAscending = !isAscending;
+	    }
+
 	    sort(key, isAscending);
 	}
     );
 });
     
 chrome.tabs.onUpdated.addListener(function (tabid, selectinfo, tab) {
+    var key = localStorage["sortKey"] || "url";
     isSorted(
 	key,
 	isAscending,
-	function () { },
-	function () {
-	    sort(key, isAscending);
+	function (sorted) {
+	    console.log(sorted);
+	    if (!sorted && ((localStorage["isAlways"] || "") == "true"))
+		sort(key, isAscending);
 	}
     );
 });
