@@ -1,0 +1,40 @@
+function countPinnedTab(tabs) {
+    var count = 0;
+
+    for (var i = 0, n = tabs.length; i < n; i++) {
+	if (tabs[i].pinned)
+	    count++;
+    }
+
+    return count;
+}
+
+function sort(sortkey) {
+    chrome.windows.getCurrent(function (window) {
+	chrome.tabs.getAllInWindow(window.id, function(tabs) {
+	    console.log(tabs);
+
+	    tabs.sort(function (a, b) {
+		return a[sortkey] > b[sortkey] ? 1 : -1;
+	    });
+
+	    var origin = countPinnedTab(tabs);
+	    for (var i = 0, n = tabs.length; i < n; i++) {
+		chrome.tabs.move(
+		    tabs[i].id,
+		    { windowId: window.id, index: origin + i }
+		);
+	    }
+	});
+    });
+}
+
+var key = "url";
+
+chrome.browserAction.onClicked.addListener(function (tab) {
+    sort(key);
+});
+
+chrome.tabs.onUpdated.addListener(function (tabid, selectinfo, tab) {
+    sort(key);
+});
