@@ -71,7 +71,6 @@ chrome.browserAction.onClicked.addListener(function (tab) {
 		settings.isAscending = !settings.isAscending;
 	    }
 
-	    console.log(settings.isAscending);
 	    sort(settings.sortKey, settings.isAscending);
 	}
     );

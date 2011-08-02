@@ -40,10 +40,11 @@ function loadOptions() {
     document.getElementById("removeSameTabs").checked = settings.removeSameTabs;
     load(settings.sortKey, "sortKey");
 }
-n
+
 function saveOptions() {
     settings.isAlways = document.getElementById("isAlways").checked;
     settings.removeSameTabs = document.getElementById("removeSameTabs").checked;
+
     var select = document.getElementById("sortKey");
     settings.sortKey = select.children[select.selectedIndex].value;
 }
