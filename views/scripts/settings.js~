@@ -1,7 +1,0 @@
-function loadOptions() {
-    document.getElementById("isAlways").checked = localStorage["isAlways"] == "true";
-}
-
-function saveOptions() {
-    localStorage["isAlways"] = new Boolean(document.getElementById("isAlways").checked);
-}
